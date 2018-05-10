@@ -1,0 +1,47 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "saltmaster" do |saltmaster|
+    saltmaster.vm.box = "centos/7"
+    saltmaster.vm.hostname = 'saltmaster'
+    saltmaster.vm.box_url = "centos/7"
+    saltmaster.vm.provision "shell", path: "scripts/install.sh"
+    saltmaster.vm.provision "shell", path: "scripts/salt-master.sh"
+    saltmaster.vm.network :private_network, ip: "192.168.56.101"
+
+    saltmaster.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "saltmaster"]
+    end
+  end
+
+  config.vm.define "saltminion1" do |saltminion1|
+    saltminion1.vm.box = "ubuntu/trusty64"
+    saltminion1.vm.hostname = 'saltminion1'
+    saltminion1.vm.box_url = "ubuntu/trusty64"
+    saltminion1.vm.provision "shell", path: "scripts/install.sh"
+    saltminion1.vm.provision "shell", path: "scripts/salt-minion.sh"
+    saltminion1.vm.network :private_network, ip: "192.168.56.102"
+
+    saltminion1.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "saltminion1"]
+    end
+  end
+
+  config.vm.define "saltminion2" do |saltminion2|
+    saltminion2.vm.box = "centos/7"
+    saltminion2.vm.hostname = 'saltminion2'
+    saltminion2.vm.box_url = "centos/7"
+    saltminion2.vm.provision "shell", path: "scripts/install.sh"
+    saltminion2.vm.provision "shell", path: "scripts/salt-minion.sh"
+    saltminion2.vm.network :private_network, ip: "192.168.56.103"
+
+    saltminion2.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "saltminion2"]
+    end
+  end
+
+end
